@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/VSWorkspaceState.json
+/.vs
+/ServiceBus/.vs
+/ServiceBus/ServiceBus/.vs
+/ServiceBus/ServiceBus/ServiceBusPublisher/bin/Debug/net8.0
+/ServiceBus/ServiceBus/ServiceBusPublisher/obj
