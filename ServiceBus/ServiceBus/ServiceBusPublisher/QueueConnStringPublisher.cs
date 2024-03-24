@@ -9,7 +9,7 @@ namespace ServiceBusPublisher
 {
     public class QueueConnStringPublisher
     {
-        private ServiceBusClient _client;
+        private ServiceBusClient _client; 
         private ServiceBusSender _sender;
 
         public QueueConnStringPublisher(string connectionString, string queueName)

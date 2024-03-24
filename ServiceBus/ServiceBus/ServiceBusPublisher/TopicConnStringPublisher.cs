@@ -32,7 +32,7 @@ namespace ServiceBusPublisher
                 // Assign subscription name to the message via the "To" property
                 message.ApplicationProperties["To"] = subscriptionName;
 
-                // Send the message
+                // Send the message 
                 await sender.SendMessageAsync(message);
                 Console.WriteLine($"Message {i} sent to subscription: {subscriptionName}.");
             }
