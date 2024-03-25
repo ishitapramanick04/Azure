@@ -19,13 +19,14 @@ namespace MSI_Topic_Publisher
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             var queueName = "demo-publisher";
+            var connectionString = "https://sb-msi-publisher.azurewebsites.net";
             var messageBody = new { Id = 1, Message = "Hello, world!" }; // Example message body
 
             // Create a managed identity credential
             var credential = new DefaultAzureCredential();
 
             // Create a Service Bus client
-            var client = new ServiceBusClient("servicebus_msi", credential);
+            var client = new ServiceBusClient(connectionString, credential);
 
             // Create a sender for the queue
             var sender = client.CreateSender(queueName);
