@@ -1,25 +1,28 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
-using System.Text.Json;
-using System;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using AuthorizationLevel = Microsoft.Azure.WebJobs.Extensions.Http.AuthorizationLevel;
 
 namespace MSI_Topic_Publisher
 {
     public static class MSI_Publisher
     {
-        [FunctionName("MSI_Publisher")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req,
-            ILogger log)
+        [Function("MSI_Publisher")]
+        public static async Task<HttpResponseData> Run(
+            [Microsoft.Azure.WebJobs.HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestData req,
+            FunctionContext executionContext)
         {
+            var logger = executionContext.GetLogger("MSI_Publisher");
+
             var queueName = "demo-publisher";
             var messageBody = new { Id = 1, Message = "Hello, world!" }; // Example message body
             var connectionString = "https://sb-msi-publisher.azurewebsites.net";
@@ -39,24 +42,24 @@ namespace MSI_Topic_Publisher
             try
             {
                 // Send the message to the queue
-                await sender.SendMessageAsync(message).ConfigureAwait(false);
-                log.LogInformation($"Message published to Service Bus queue '{queueName}'");
+                await sender.SendMessageAsync(message);
+                logger.LogInformation($"Message published to Service Bus queue '{queueName}'");
             }
             catch (Exception ex)
             {
-                log.LogError($"An error occurred while publishing message to Service Bus queue '{queueName}': {ex.Message}");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                logger.LogError($"An error occurred while publishing message to Service Bus queue '{queueName}': {ex.Message}");
+                return req.CreateResponse(HttpStatusCode.InternalServerError);
             }
             finally
             {
                 // Close the sender and client
-                                await sender.CloseAsync().ConfigureAwait(false);
-
+                await sender.DisposeAsync();
                 await client.DisposeAsync();
             }
 
-            return new OkObjectResult("Message published successfully");
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.WriteString("Message published successfully");
+            return response;
         }
     }
 }
-

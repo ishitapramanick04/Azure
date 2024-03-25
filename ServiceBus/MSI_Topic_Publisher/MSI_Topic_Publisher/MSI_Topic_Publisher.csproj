@@ -6,11 +6,10 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.1.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
+
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
